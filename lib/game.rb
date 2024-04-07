@@ -11,13 +11,14 @@ class Game
     @player_two = nil
     @current_player = nil
     @board = Board.new
-    @player_rounds = 0
-    @tie = false
+    @end_game = false
+    @winner = nil
   end
 
   def start
     game_setup
-    play_round until game_over?
+    play_round until @end_game
+    end_game
   end
 
   def game_setup
@@ -41,15 +42,43 @@ class Game
   end
 
   def play_round
-    @board.print_board
+    print "\e[2J\e[H"
     puts "#{@current_player.name} is playing!"
+    @board.print_board
     print 'Insert column: '
     loop do
       column = gets.chomp.to_i # convert input to integer so it is easier to check
-      response = @board.add_circle(column, 'yellow')
+      response = @board.add_circle(column, @current_player.color)
       break if response == 1
 
       print 'Invalid input! Try again: '
+    end
+    @end_game = game_over?
+    swap_current_player
+  end
+
+  def swap_current_player
+    @current_player = @current_player == @player_one ? @player_two : @player_one
+  end
+  
+  def game_over?
+    if @board.four_in_line?(@current_player.color)
+      @winner = @current_player
+      return true
+    elsif @board.is_board_full?
+      return true
+    else
+      return false
+    end
+  end
+
+  def end_game
+    print "\e[2J\e[H"
+    @board.print_board
+    if @end_game
+      puts "#{@winner.name} won the game!"
+    else
+      puts 'It\'s a tie!'
     end
   end
 end

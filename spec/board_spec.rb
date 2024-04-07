@@ -64,12 +64,12 @@ describe Board do
     }
     let(:no_four) {
       [
-        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\e[33m\u25cf\e[0m", "\u25cb", "\u25cb"],
         ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
         ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
         ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
         ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
-        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"]
+        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
+        ["\e[33m\u25cf\e[0m", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"]
       ]
     }
     let(:diagonal) {
@@ -126,6 +126,47 @@ describe Board do
       it 'returns true' do
         response = board.four_in_line?('yellow')
         expect(response).to be true
+      end
+    end
+  end
+
+  describe '#is_board_full?' do
+
+    subject(:board) { described_class.new }
+    let(:empty_board) {
+      [
+        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
+        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
+        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
+        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
+        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"],
+        ["\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb", "\u25cb"]
+      ]
+    }
+    let(:full_board) {
+      [
+        ["\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m"],
+        ["\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m"],
+        ["\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m"],
+        ["\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m"],
+        ["\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m"],
+        ["\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m", "\e[33m\u25cf\e[0m"]
+      ]
+    }
+
+    context 'when board is full' do
+      it 'returns true' do
+        board.instance_variable_set(:@fields, full_board)
+        result = board.is_board_full?
+        expect(result).to be true
+      end
+    end
+
+    context 'when board is not full' do
+      it 'returns false' do
+        board.instance_variable_set(:@fields, empty_board)
+        result = board.is_board_full?
+        expect(result).to be false
       end
     end
   end

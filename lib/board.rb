@@ -59,10 +59,10 @@ class Board
   end
 
   def add_circle(column, circle)
+    column = column - 1 # User inputs columns from 1-7, therefore subtract one from input
+
     # return 0 if circle was not added (conditions that it can be added are not met)
     return 0 if circle_cant_be_added?(column, circle)
-
-    column = column - 1 # User inputs columns from 1-7, therefore subtract one from input
 
     # add circle to column
     5.downto(0) do |row|
@@ -88,11 +88,25 @@ class Board
         # each set holds 4 positions that connect four circles
         # if each field position, calculated from our last added circle, has that circle
         # it means four are connected
-        return true if set.all? { |position| @fields[@last_added[0]+position[0]][@last_added[1]+position[1]] == CIRCLES[circle] }
+        return true if set.all? do |position| 
+          # calculate coords and skip iteration if coors go out of bounds
+          x = @last_added[0]+position[0]
+          next if x > 5 || x < 0
+          y = @last_added[1]+position[1]
+          next if y > 6 || y < 0
+          value =  @fields[x][y]
+          value == CIRCLES[circle] 
+        end
       end
     end
 
     false
+  end
+
+  def is_board_full?
+    @fields.all? do |row|
+      row.all? { |circle| circle != CIRCLES['empty'] }
+    end
   end
 
   private 
@@ -107,7 +121,7 @@ class Board
 
   def invalid_column?(column)
     # all string inputs get converted to 0, hence we also disable string inputs with these conditions
-    column < 1 || column > 6
+    column < 0 || column > 6
   end
 
   def invalid_circle?(circle)
